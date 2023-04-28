@@ -5,7 +5,9 @@ import "strings"
 func parseDNSToCheck(data string) []string {
 	out := make([]string, 0, strings.Count(data, ",")+1)
 	for _, dns := range strings.Split(data, ",") {
-		out = append(out, strings.TrimSpace(dns))
+		if w := strings.TrimSpace(dns); w != "" {
+			out = append(out, w)
+		}
 	}
 	return out
 }

@@ -1,4 +1,4 @@
-module cloudflare-ddns
+module github.com/mkelcik/cloudflare-ddns-update
 
 go 1.20
 

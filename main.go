@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"cloudflare-ddns/internal"
-	"cloudflare-ddns/public_resolvers"
 	"github.com/cloudflare/cloudflare-go"
+	"github.com/mkelcik/cloudflare-ddns-update/internal"
+	"github.com/mkelcik/cloudflare-ddns-update/public_resolvers"
 )
 
 type PublicIpResolver interface {
@@ -43,6 +43,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Printf("Current public ip `%s`", currentPublicIP)
 
 	api, err := cloudflare.NewWithAPIToken(config.ApiToken)
 	if err != nil {
