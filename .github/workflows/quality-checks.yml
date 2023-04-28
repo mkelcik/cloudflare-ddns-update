@@ -19,6 +19,7 @@ jobs:
           options: -v ${{ github.workspace }}:/work
           run: |
             cd /work
+            echo "Running Dockerfile lint"
             hadolint Dockerfile
   golangci:
     name: Static code check
