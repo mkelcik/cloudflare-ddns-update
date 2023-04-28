@@ -16,8 +16,9 @@ jobs:
       - uses: addnab/docker-run-action@v3
         with:
           image: hadolint/hadolint:latest-debian
-          options: -v ${{ github.workspace }}:/
+          options: -v ${{ github.workspace }}:/work
           run: |
+            cd /work
             hadolint Dockerfile
   golangci:
     name: Static code check
