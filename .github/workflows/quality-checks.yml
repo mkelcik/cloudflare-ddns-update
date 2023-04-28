@@ -13,14 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: addnab/docker-run-action@v3
+      - uses: hadolint/hadolint-action@v3.1.0
         with:
-          image: hadolint/hadolint:latest-debian
-          options: -v ${{ github.workspace }}:/work
-          run: |
-            cd /work
-            echo "Running Dockerfile lint"
-            hadolint Dockerfile
+          dockerfile: Dockerfile
   golangci:
     name: Static code check
     runs-on: ubuntu-latest
