@@ -14,10 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: addnab/docker-run-action@v3
-        image: hadolint/hadolint:latest-debian
-        options: -v ${{ github.workspace }}:/
-        run: |
-          hadolint Dockerfile
+        with:
+          image: hadolint/hadolint:latest-debian
+          options: -v ${{ github.workspace }}:/
+          run: |
+            hadolint Dockerfile
   golangci:
     name: Static code check
     runs-on: ubuntu-latest
