@@ -8,6 +8,16 @@ on:
       - main
   pull_request:
 jobs:
+  docker-lint:
+    name: Dockerfile lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: addnab/docker-run-action@v3
+        image: hadolint/hadolint:latest-debian
+        options: -v ${{ github.workspace }}:/
+        run: |
+          hadolint Dockerfile
   golangci:
     name: Static code check
     runs-on: ubuntu-latest
@@ -68,13 +78,3 @@ jobs:
               echo "Failed"
               exit 1
           fi
-    docker-lint:
-      name: Dockerfile lint
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - uses: addnab/docker-run-action@v3
-          image: hadolint/hadolint:latest-debian
-          options: -v ${{ github.workspace }}:/
-          run: |
-            hadolint Dockerfile
