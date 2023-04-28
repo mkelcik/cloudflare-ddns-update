@@ -22,19 +22,17 @@ jobs:
         with:
           version: latest
   tests:
-    name: Client tests
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Start testing stack
-        run: docker-compose -f ./docker-compose-ci.yaml up -d
       - name: Prepare go environment
         uses: actions/setup-go@v4
         with:
           go-version: '1.20'
           cache: false
       - name: Run client tests
-        run: env TEST_API_HOST=http://localhost:8080 go test --cover -coverprofile coverage.out -covermode count -v ./...
+        run: go test --cover -coverprofile coverage.out -covermode count -v ./...
       - name: Coverage check
         env:
           TESTCOVERAGE_THRESHOLD: 0
