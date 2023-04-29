@@ -1,7 +1,9 @@
-name: ci
+name: DockerHub push
 
 on:
   push:
+    tags:
+      - v*
     branches:
       - 'releases/**'
 
