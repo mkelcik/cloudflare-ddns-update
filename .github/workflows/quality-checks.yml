@@ -31,7 +31,7 @@ jobs:
           version: latest
 
   dep-vulnerability:
-    name: Dependency vulnerability scan
+    name: Dependency vulnerability scanner
     needs: [docker-lint, golangci, tests]
     runs-on: ubuntu-latest
     steps:
