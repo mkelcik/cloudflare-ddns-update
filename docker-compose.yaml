@@ -1,0 +1,10 @@
+version: "3"
+services:
+  cf-dns-updater:
+    image: mkelcik/cloudflare-ddns-update:latest
+    environment:
+      - CLOUDFLARE_DNS_TO_CHECK=my.testdomain.com,your.testdomain.com
+      - CLOUDFLARE_API_KEY=your_cloudflare_api_key
+      - CLOUDFLARE_ZONE=testdomain.com
+      - ON_CHANGE_COMMENT="automatically updated"
+      - CHECK_INTERVAL_SECONDS=300
