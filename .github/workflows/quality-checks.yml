@@ -32,6 +32,7 @@ jobs:
 
   dep-vulnerability:
     name: Dependency vulnerability scan
+    needs: [docker-lint, golangci, tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -78,7 +79,7 @@ jobs:
           fi
   build:
     name: Image vulnerability scanner
-    needs: [docker-lint, golangci]
+    needs: [docker-lint, golangci, tests]
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
