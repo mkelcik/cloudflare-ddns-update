@@ -4,8 +4,7 @@ FROM golang:1.20 as build
 COPY . /opt/project/
 WORKDIR /opt/project
 
-RUN apt update
-RUN apt-get install -y ca-certificates
+RUN apt update && apt-get install -y ca-certificates
 
 RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /cloudflare-ddns-updater
 
