@@ -6,6 +6,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"time"
 )
 
 const (
@@ -24,6 +25,12 @@ type IfConfigMe struct {
 	client Doer
 }
 
+func NewDefaultIfConfigMe() *IfConfigMe {
+	return NewIfConfigMe(&http.Client{
+		Timeout: 10 * time.Second,
+	})
+}
+
 func NewIfConfigMe(c Doer) *IfConfigMe {
 	return &IfConfigMe{client: c}
 }
@@ -38,7 +45,9 @@ func (i IfConfigMe) ResolvePublicIp(ctx context.Context) (net.IP, error) {
 	if err != nil {
 		return net.IP{}, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return net.IP{}, fmt.Errorf("unexpected response code %d", resp.StatusCode)

@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"net"
-	"net/http"
 	"os/signal"
 	"syscall"
 	"time"
@@ -24,9 +23,7 @@ func getResolver(resolverName string) PublicIpResolver {
 	case public_resolvers.IfConfigMeTag:
 		fallthrough
 	default:
-		return public_resolvers.NewIfConfigMe(&http.Client{
-			Timeout: 10 * time.Second,
-		})
+		return public_resolvers.NewDefaultIfConfigMe()
 	}
 }
 
@@ -57,33 +54,46 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dns, err := allDNSRecords(ctx, api, cloudflare.ZoneIdentifier(zoneID))
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Println("waiting for update tick ...")
+	ticker := time.NewTicker(config.CheckInterval)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			log.Println("tick received checking ...")
+			func() {
+				dns, err := allDNSRecords(ctx, api, cloudflare.ZoneIdentifier(zoneID))
+				if err != nil {
+					log.Fatal(err)
+				}
 
-	for _, dnsRecord := range dns {
-		if internal.Contains(config.DnsRecordsToCheck, dnsRecord.Name) {
-			log.Printf("Checking record `%s` with current value `%s` ...", dnsRecord.Name, dnsRecord.Content)
-			if currentPublicIP.String() == dnsRecord.Content {
-				log.Println("OK")
-				continue // no update needed
-			}
+				for _, dnsRecord := range dns {
+					if internal.Contains(config.DnsRecordsToCheck, dnsRecord.Name) {
+						log.Printf("Checking record `%s` with current value `%s` ...", dnsRecord.Name, dnsRecord.Content)
+						if currentPublicIP.String() == dnsRecord.Content {
+							log.Println("OK")
+							continue // no update needed
+						}
 
-			update := cloudflare.UpdateDNSRecordParams{
-				ID:      dnsRecord.ID,
-				Content: currentPublicIP.String(),
-			}
+						update := cloudflare.UpdateDNSRecordParams{
+							ID:      dnsRecord.ID,
+							Content: currentPublicIP.String(),
+						}
 
-			if config.OnChangeComment != "" {
-				update.Comment = config.OnChangeComment
-			}
+						if config.OnChangeComment != "" {
+							update.Comment = config.OnChangeComment
+						}
 
-			if _, err := api.UpdateDNSRecord(ctx, cloudflare.ZoneIdentifier(zoneID), update); err != nil {
-				log.Printf("error updating dns record: %s", err)
-			} else {
-				log.Printf("Updated to `%s`", currentPublicIP)
-			}
+						if _, err := api.UpdateDNSRecord(ctx, cloudflare.ZoneIdentifier(zoneID), update); err != nil {
+							log.Printf("error updating dns record: %s", err)
+						} else {
+							log.Printf("Updated to `%s`", currentPublicIP)
+						}
+					}
+				}
+			}()
+		case <-ctx.Done():
+			break
 		}
 	}
 }
