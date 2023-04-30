@@ -36,13 +36,6 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	currentPublicIP, err := getResolver(config.PublicIpResolverTag).ResolvePublicIp(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Printf("Current public ip `%s`", currentPublicIP)
-
 	api, err := cloudflare.NewWithAPIToken(config.ApiToken)
 	if err != nil {
 		log.Fatal(err)
@@ -62,6 +55,13 @@ func main() {
 		case <-ticker.C:
 			log.Println("tick received checking ...")
 			func() {
+				currentPublicIP, err := getResolver(config.PublicIpResolverTag).ResolvePublicIp(ctx)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				log.Printf("Current public ip `%s`", currentPublicIP)
+
 				dns, err := allDNSRecords(ctx, api, cloudflare.ZoneIdentifier(zoneID))
 				if err != nil {
 					log.Fatal(err)
