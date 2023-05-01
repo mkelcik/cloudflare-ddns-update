@@ -15,7 +15,7 @@ Before run, you need configure this environment variables.
  - `CLOUDFLARE_ZONE` - (required) zone name with domain you want to check. See: [https://developers.cloudflare.com/fundamentals/get-started/concepts/accounts-and-zones/#zones](https://developers.cloudflare.com/fundamentals/get-started/concepts/accounts-and-zones/#zones)
  - `ON_CHANGE_COMMENT` - (optional) in the event that the ip address of the dns record changes, this comment will be added to the record
  - `CHECK_INTERVAL_SECONDS` - (optional) how often will the ip address of the records be checked (default: `300`)
- - `PUBLIC_IP_RESOLVER` - (optional) public ip address resolver. For now only resolving via `https://ifconfig.me` is implemented. (default: `ifconfig.me`)
+ - `PUBLIC_IP_RESOLVER` - (optional) public ip address resolver. (default: `ifconfig.me`) Available: `ifconfig.me`, `v4.ident.me`
 
 ### Building from source
 
@@ -43,6 +43,7 @@ version: "3"
 services:
   cf-dns-updater:
     image: mkelcik/cloudflare-ddns-update:latest
+    restart: unless-stopped
     environment:
       - CLOUDFLARE_DNS_TO_CHECK=my.testdomain.com,your.testdomain.com
       - CLOUDFLARE_API_KEY=your_cloudflare_api_key
