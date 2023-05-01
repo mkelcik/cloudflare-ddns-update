@@ -1,4 +1,4 @@
-https://github.com/mkelcik/cloudflare-ddns-update/actions/workflows/quality-checks.yml/badge.svg
+![Code and security checks](https://github.com/mkelcik/cloudflare-ddns-update/actions/workflows/quality-checks.yml/badge.svg)
 
 ## What is Cloudflare Dynamic DNS?
 DNS records are static, and it does not play well with dynamic IP addresses. Now, to solve that problem, you’ll need to set up dynamic DNS. Cloudflare provides an API that allows you to manage DNS records programmatically.
