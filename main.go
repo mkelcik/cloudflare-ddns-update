@@ -17,13 +17,15 @@ type PublicIpResolver interface {
 	ResolvePublicIp(ctx context.Context) (net.IP, error)
 }
 
-func getResolver(resolverName string) PublicIpResolver {
+func getResolver(resolverName string) (PublicIpResolver, string) {
 	switch resolverName {
 	// HERE add another resolver if needed
+	case public_resolvers.V4IdentMeTag:
+		return public_resolvers.NewV4IdentMeDefault(), public_resolvers.V4IdentMeTag
 	case public_resolvers.IfConfigMeTag:
 		fallthrough
 	default:
-		return public_resolvers.NewDefaultIfConfigMe()
+		return public_resolvers.NewDefaultIfConfigMe(), public_resolvers.IfConfigMeTag
 	}
 }
 
@@ -48,14 +50,14 @@ func main() {
 	}
 
 	// public ip resolver
-	publicIpResolver := getResolver(config.PublicIpResolverTag)
+	publicIpResolver, resolverTag := getResolver(config.PublicIpResolverTag)
 
 	checkFunc := func() {
 		currentPublicIP, err := publicIpResolver.ResolvePublicIp(ctx)
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Current public ip `%s`", currentPublicIP)
+		log.Printf("Current public ip `%s` (%s)", currentPublicIP, resolverTag)
 
 		dns, err := allDNSRecords(ctx, api, cloudflare.ZoneIdentifier(zoneID))
 		if err != nil {

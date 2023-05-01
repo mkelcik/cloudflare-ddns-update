@@ -2,6 +2,7 @@ version: "3"
 services:
   cf-dns-updater:
     image: mkelcik/cloudflare-ddns-update:latest
+    restart: unless-stopped
     environment:
       - CLOUDFLARE_DNS_TO_CHECK=my.testdomain.com,your.testdomain.com
       - CLOUDFLARE_API_KEY=your_cloudflare_api_key
