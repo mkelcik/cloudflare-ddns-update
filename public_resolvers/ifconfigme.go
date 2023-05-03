@@ -23,8 +23,9 @@ func NewDefaultIfConfigMe() *IfConfigMe {
 func NewIfConfigMe(client Doer) *IfConfigMe {
 	return &IfConfigMe{
 		baseResolver: baseResolver{
-			client: client,
-			url:    ifConfigMeUrl,
+			client:   client,
+			url:      ifConfigMeUrl,
+			ipParser: defaultIpParser,
 		},
 	}
 }

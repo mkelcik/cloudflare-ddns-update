@@ -2,19 +2,30 @@ package public_resolvers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
 )
 
+var NoIPInResponseError = errors.New("no ip found in response")
+
 type Doer interface {
 	Do(*http.Request) (*http.Response, error)
 }
 
+type ipParserFunc func(reader io.Reader) (string, error)
+
+func defaultIpParser(reader io.Reader) (string, error) {
+	out, err := io.ReadAll(reader)
+	return string(out), err
+}
+
 type baseResolver struct {
-	client Doer
-	url    string
+	client   Doer
+	url      string
+	ipParser ipParserFunc
 }
 
 func (i baseResolver) ResolvePublicIp(ctx context.Context) (net.IP, error) {
@@ -35,10 +46,10 @@ func (i baseResolver) ResolvePublicIp(ctx context.Context) (net.IP, error) {
 		return net.IP{}, fmt.Errorf("unexpected response code %d", resp.StatusCode)
 	}
 
-	ipText, err := io.ReadAll(resp.Body)
+	ipText, err := i.ipParser(resp.Body)
 	if err != nil {
 		return net.IP{}, fmt.Errorf("error reading body: %w", err)
 	}
 
-	return net.ParseIP(string(ipText)), nil
+	return net.ParseIP(ipText), nil
 }

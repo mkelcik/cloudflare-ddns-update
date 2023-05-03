@@ -23,8 +23,9 @@ func NewV4IdentMeDefault() *V4IdentMe {
 func NewV4IdentMe(client Doer) *V4IdentMe {
 	return &V4IdentMe{
 		baseResolver: baseResolver{
-			client: client,
-			url:    v4IdentMeUrl,
+			client:   client,
+			url:      v4IdentMeUrl,
+			ipParser: defaultIpParser,
 		},
 	}
 }
