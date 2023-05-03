@@ -21,7 +21,7 @@ func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
 // NewTestClient returns *http.Client with Transport replaced to avoid making real calls
 func NewTestClient(fn RoundTripFunc) *http.Client {
 	return &http.Client{
-		Transport: RoundTripFunc(fn),
+		Transport: fn,
 	}
 }
 
@@ -54,6 +54,7 @@ func Test_baseResolver_ResolvePublicIp(t *testing.T) {
 	type fields struct {
 		client Doer
 		url    string
+		fn     ipParserFunc
 	}
 	type args struct {
 		ctx context.Context
@@ -70,6 +71,7 @@ func Test_baseResolver_ResolvePublicIp(t *testing.T) {
 			fields: fields{
 				client: client,
 				url:    testUrl,
+				fn:     defaultIpParser,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -81,8 +83,9 @@ func Test_baseResolver_ResolvePublicIp(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			i := baseResolver{
-				client: tt.fields.client,
-				url:    tt.fields.url,
+				client:   tt.fields.client,
+				url:      tt.fields.url,
+				ipParser: tt.fields.fn,
 			}
 			got, err := i.ResolvePublicIp(tt.args.ctx)
 			if (err != nil) != tt.wantErr {

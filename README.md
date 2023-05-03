@@ -17,7 +17,7 @@ Before run, you need configure this environment variables.
  - `CLOUDFLARE_ZONE` - (required) zone name with domain you want to check. See: [https://developers.cloudflare.com/fundamentals/get-started/concepts/accounts-and-zones/#zones](https://developers.cloudflare.com/fundamentals/get-started/concepts/accounts-and-zones/#zones)
  - `ON_CHANGE_COMMENT` - (optional) in the event that the ip address of the dns record changes, this comment will be added to the record
  - `CHECK_INTERVAL_SECONDS` - (optional) how often will the ip address of the records be checked (default: `300`)
- - `PUBLIC_IP_RESOLVER` - (optional) public ip address resolver. (default: `ifconfig.me`) Available: `ifconfig.me`, `v4.ident.me`
+ - `PUBLIC_IP_RESOLVER` - (optional) public ip address resolver. (default: `ifconfig.me`) Available: `ifconfig.me`, `v4.ident.me`, `1.1.1.1`
 
 ### Building from source
 

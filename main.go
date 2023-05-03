@@ -20,6 +20,8 @@ type PublicIpResolver interface {
 func getResolver(resolverName string) (PublicIpResolver, string) {
 	switch resolverName {
 	// HERE add another resolver if needed
+	case public_resolvers.CloudflareTraceTag:
+		return public_resolvers.NewDefaultCloudflareTrace(), public_resolvers.CloudflareTraceTag
 	case public_resolvers.V4IdentMeTag:
 		return public_resolvers.NewV4IdentMeDefault(), public_resolvers.V4IdentMeTag
 	case public_resolvers.IfConfigMeTag:
@@ -57,7 +59,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Current public ip `%s` (%s)", currentPublicIP, resolverTag)
+		log.Printf("Current public ip `%s` (resolver: %s)", currentPublicIP, resolverTag)
 
 		dns, err := allDNSRecords(ctx, api, cloudflare.ZoneIdentifier(zoneID))
 		if err != nil {
