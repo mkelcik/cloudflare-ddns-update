@@ -82,6 +82,7 @@ docker run -e CLOUDFLARE_DNS_TO_CHECK=my.testdomain.com,your.testdomain.com -e C
 
  - prometheus metrics
  - mqtt and rabbitmq notifiers
+ - IPv6 support
 
 ### Contributing 
 
