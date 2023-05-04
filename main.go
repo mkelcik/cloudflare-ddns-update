@@ -18,21 +18,6 @@ type PublicIpResolver interface {
 	ResolvePublicIp(ctx context.Context) (net.IP, error)
 }
 
-func getNotifiers(tags []string) notifications.Notifiers {
-	out := notifications.Notifiers{}
-	for _, t := range tags {
-		if initFn, ok := notifications.Available[t]; ok {
-			notifier, err := initFn()
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-			out = append(out, notifier)
-		}
-	}
-	return out
-}
-
 func getResolver(resolverName string) (PublicIpResolver, string) {
 	switch resolverName {
 	// HERE add another resolver if needed
@@ -67,7 +52,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	notifiers := getNotifiers(config.Notifiers)
+	notifiers := notifications.GetNotifiers(config.Notifiers)
 
 	// public ip resolver
 	publicIpResolver, resolverTag := getResolver(config.PublicIpResolverTag)

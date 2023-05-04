@@ -7,15 +7,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
-	"strings"
 )
 
 const (
-	webhookTag             = "webhook"
-	webhookRequestTypeJson = "JSON"
-	envWebhookUrl          = "WEBHOOK_RL"
-	envWebhookRequestType  = "WEBHOOK_REQ_TYPE"
+	webhookTag = "webhook"
 )
 
 type Doer interface {
@@ -23,15 +18,7 @@ type Doer interface {
 }
 
 type WebhookConfig struct {
-	Url  string
-	Json bool
-}
-
-func NewWebhookConfigFromEnv() WebhookConfig {
-	return WebhookConfig{
-		Url:  os.Getenv(envWebhookUrl),
-		Json: strings.ToUpper(os.Getenv(envWebhookRequestType)) == webhookRequestTypeJson,
-	}
+	Url string
 }
 
 type WebhookNotification struct {
@@ -48,12 +35,9 @@ func NewWebhookNotification(config WebhookConfig, client Doer) *WebhookNotificat
 }
 
 func (w WebhookNotification) getRequestBody(notification Notification) (io.Reader, error) {
-	out := bytes.NewBuffer(notification.NewIp)
-	if w.config.Json {
-		if err := json.NewEncoder(out).Encode(notification); err != nil {
-			return nil, fmt.Errorf("error encoding notification body: %w", err)
-		}
-		return out, nil
+	out := bytes.NewBuffer(nil)
+	if err := json.NewEncoder(out).Encode(notification); err != nil {
+		return nil, fmt.Errorf("error encoding json notification body: %w", err)
 	}
 	return out, nil
 }
