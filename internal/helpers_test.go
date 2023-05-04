@@ -38,8 +38,8 @@ func Test_parseDNSToCheck(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := parseDNSToCheck(tt.args.data); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("parseDNSToCheck() = %v, want %v", got, tt.want)
+			if got := parseCommaDelimited(tt.args.data); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("parseCommaDelimited() = %v, want %v", got, tt.want)
 			}
 		})
 	}

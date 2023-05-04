@@ -2,10 +2,10 @@ package internal
 
 import "strings"
 
-func parseDNSToCheck(data string) []string {
+func parseCommaDelimited(data string) []string {
 	out := make([]string, 0, strings.Count(data, ",")+1)
-	for _, dns := range strings.Split(data, ",") {
-		if w := strings.TrimSpace(dns); w != "" {
+	for _, item := range strings.Split(data, ",") {
+		if w := strings.TrimSpace(item); w != "" {
 			out = append(out, w)
 		}
 	}
