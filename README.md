@@ -18,9 +18,24 @@ Before run, you need configure this environment variables.
  - `ON_CHANGE_COMMENT` - (optional) in the event that the ip address of the dns record changes, this comment will be added to the record
  - `CHECK_INTERVAL_SECONDS` - (optional) how often will the ip address of the records be checked (default: `300`)
  - `PUBLIC_IP_RESOLVER` - (optional) public ip address resolver. (default: `ifconfig.me`) Available: `ifconfig.me`, `v4.ident.me`, `1.1.1.1`
- - `NOTIFIERS` - (optional) setting the notifier in case of an update of the dns record. Multiple entries are separated by commas. (default none). Example: `webhook@http://localhost/cloudflare-notification` 
-   - Available
-     - `webhook` - Call defined webhook. Example: `webhook@http://localhost/cloudflare-notification`
+ - `NOTIFIERS` - (optional) setting the notifier in case of an update of the dns record. Multiple entries are separated by commas. (default none). Example: `webhook@http://localhost/cloudflare-notification`
+
+### Notifications
+
+Currently, only webhook notification is available. Webhook sends a POST request to the specified endpoint in json format.
+
+Request body example:
+```json
+{
+  "old_ip": "xxx.xxx.xxx.xxx",
+  "new_ip": "xxx.xxx.xxx.xxx",
+  "checked_at": "2023-05-04T17:39:42.942850354+02:00",
+  "resolver_tag": "ifconfig.me",
+  "domain": "my.domain.com"
+}
+```
+
+Other notification methods will be implemented later (check future plans section).
 
 ### Building from source
 
@@ -52,6 +67,7 @@ services:
     environment:
       - CLOUDFLARE_DNS_TO_CHECK=my.testdomain.com,your.testdomain.com
       - CLOUDFLARE_API_KEY=your_cloudflare_api_key
+      - NOTIFIERS=webhook@http://localhost/cloudflare-updated-notification
       - CLOUDFLARE_ZONE=testdomain.com
       - ON_CHANGE_COMMENT="automatically updated"
       - CHECK_INTERVAL_SECONDS=300
@@ -61,6 +77,11 @@ services:
 ```shell
 docker run -e CLOUDFLARE_DNS_TO_CHECK=my.testdomain.com,your.testdomain.com -e CLOUDFLARE_API_KEY=your_cloudflare_api_key -e CLOUDFLARE_ZONE=testdomain.com -e ON_CHANGE_COMMENT="automatically updated" -e CHECK_INTERVAL_SECONDS=300 mkelcik/cloudflare-ddns-update:latest 
 ```
+
+### Future plans
+
+ - prometheus metrics
+ - mqtt and rabbitmq notifiers
 
 ### Contributing 
 
