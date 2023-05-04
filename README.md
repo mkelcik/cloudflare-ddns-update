@@ -5,7 +5,7 @@ DNS records are static, and it does not play well with dynamic IP addresses. Now
 
 To set up a Cloudflare dynamic DNS, you’ll need to run a process on a client inside your network that does two main actions: get your network’s current public IP address and automatically update the corresponding DNS record.
 
-This simple updater do the job.
+This simple updater do the job, and send notifications, if change happen.
 
 ## How to run
 ### Environment variables
@@ -19,7 +19,7 @@ Before run, you need configure this environment variables.
  - `CHECK_INTERVAL_SECONDS` - (optional) how often will the ip address of the records be checked (default: `300`)
  - `PUBLIC_IP_RESOLVER` - (optional) public ip address resolver. (default: `ifconfig.me`) Available: `ifconfig.me`, `v4.ident.me`, `1.1.1.1`
  - `NOTIFIERS` - (optional) setting the notifier in case of an update of the dns record. Multiple entries are separated by commas. (default none). Example: `webhook@http://localhost/cloudflare-notification` 
-   - Available(
+   - Available
      - `webhook` - Call defined webhook. Example: `webhook@http://localhost/cloudflare-notification`
 
 ### Building from source
