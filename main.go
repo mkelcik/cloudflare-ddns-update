@@ -10,6 +10,7 @@ import (
 
 	"github.com/cloudflare/cloudflare-go"
 	"github.com/mkelcik/cloudflare-ddns-update/internal"
+	"github.com/mkelcik/cloudflare-ddns-update/notifications"
 	"github.com/mkelcik/cloudflare-ddns-update/public_resolvers"
 )
 
@@ -51,6 +52,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	notifiers := notifications.GetNotifiers(config.Notifiers)
+
 	// public ip resolver
 	publicIpResolver, resolverTag := getResolver(config.PublicIpResolverTag)
 
@@ -85,9 +88,19 @@ func main() {
 
 				if _, err := api.UpdateDNSRecord(ctx, cloudflare.ZoneIdentifier(zoneID), update); err != nil {
 					log.Printf("error updating dns record: %s", err)
-				} else {
-					log.Printf("Updated to `%s`", currentPublicIP)
+					continue
 				}
+
+				if err := notifiers.NotifyWithLog(ctx, notifications.Notification{
+					OldIp:       net.ParseIP(dnsRecord.Content),
+					NewIp:       currentPublicIP,
+					CheckedAt:   time.Now(),
+					ResolverTag: resolverTag,
+					Domain:      dnsRecord.Name,
+				}); err != nil {
+					log.Printf("errors in notifications: %s", err)
+				}
+				log.Printf("Updated to `%s`", currentPublicIP)
 			}
 		}
 	}

@@ -17,6 +17,7 @@ const (
 	envKeyCloudflareZone       = "CLOUDFLARE_ZONE"
 	envKeyOnChangeComment      = "ON_CHANGE_COMMENT"
 	envKeyCheckIntervalSeconds = "CHECK_INTERVAL_SECONDS"
+	envKeyNotifiers            = "NOTIFIERS"
 )
 
 type Config struct {
@@ -25,6 +26,7 @@ type Config struct {
 	ApiToken            string
 	CloudflareZone      string
 	OnChangeComment     string
+	Notifiers           []string
 	CheckInterval       time.Duration
 }
 
@@ -52,11 +54,12 @@ func NewConfig() Config {
 	}
 
 	return Config{
-		DnsRecordsToCheck:   parseDNSToCheck(os.Getenv(envKeyDnsToCheck)),
+		DnsRecordsToCheck:   parseCommaDelimited(os.Getenv(envKeyDnsToCheck)),
 		PublicIpResolverTag: os.Getenv(envKeyPublicIpResolverTag),
 		ApiToken:            os.Getenv(envKeyCloudflareApiKey),
 		CloudflareZone:      os.Getenv(envKeyCloudflareZone),
 		OnChangeComment:     os.Getenv(envKeyOnChangeComment),
+		Notifiers:           parseCommaDelimited(os.Getenv(envKeyNotifiers)),
 		CheckInterval:       time.Duration(checkInterval) * time.Second,
 	}
 }
