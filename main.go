@@ -83,7 +83,7 @@ func main() {
 				}
 
 				if config.OnChangeComment != "" {
-					update.Comment = config.OnChangeComment
+					update.Comment = &config.OnChangeComment
 				}
 
 				if _, err := api.UpdateDNSRecord(ctx, cloudflare.ZoneIdentifier(zoneID), update); err != nil {
