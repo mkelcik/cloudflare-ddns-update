@@ -4,7 +4,7 @@ FROM golang:1.21 as build
 COPY . /opt/project/
 WORKDIR /opt/project
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates=20230311
 
 RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /cloudflare-ddns-updater
 
