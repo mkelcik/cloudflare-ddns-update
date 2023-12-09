@@ -1,6 +1,8 @@
 package internal
 
-import "strings"
+import (
+	"strings"
+)
 
 func parseCommaDelimited(data string) []string {
 	out := make([]string, 0, strings.Count(data, ",")+1)

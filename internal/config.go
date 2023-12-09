@@ -18,6 +18,7 @@ const (
 	envKeyOnChangeComment      = "ON_CHANGE_COMMENT"
 	envKeyCheckIntervalSeconds = "CHECK_INTERVAL_SECONDS"
 	envKeyNotifiers            = "NOTIFIERS"
+	envKeyIgnoredIpChange      = "IGNORED_IP_CHANGE"
 )
 
 type Config struct {
@@ -28,6 +29,7 @@ type Config struct {
 	OnChangeComment     string
 	Notifiers           []string
 	CheckInterval       time.Duration
+	IgnoredIpChange     []string
 }
 
 func (c Config) Validate() error {
@@ -61,5 +63,6 @@ func NewConfig() Config {
 		OnChangeComment:     os.Getenv(envKeyOnChangeComment),
 		Notifiers:           parseCommaDelimited(os.Getenv(envKeyNotifiers)),
 		CheckInterval:       time.Duration(checkInterval) * time.Second,
+		IgnoredIpChange:     parseCommaDelimited(os.Getenv(envKeyIgnoredIpChange)),
 	}
 }
