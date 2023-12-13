@@ -64,6 +64,12 @@ func main() {
 		}
 		log.Printf("Current public ip `%s` (resolver: %s)", currentPublicIP, resolverTag)
 
+		// check if ip is not in ignore list
+		if internal.IgnoredIpChange(currentPublicIP, config.IgnoredIpChange) {
+			log.Printf("Ignored ip change `%s`, skipping.", currentPublicIP)
+			return
+		}
+
 		dns, err := allDNSRecords(ctx, api, cloudflare.ZoneIdentifier(zoneID))
 		if err != nil {
 			log.Fatal(err)
